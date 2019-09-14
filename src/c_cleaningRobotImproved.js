@@ -4,9 +4,9 @@ function makeDiagram(selector) {
     diagram.world = world;
     diagram.xPosition = (floorNumber) => (floorNumber % 3) * 200;
     diagram.yAreaPosition = (floorNumber) => {
-        if(floorNumber < 3){
+        if (floorNumber < 3) {
             return 0
-        } else if(floorNumber < 6) {
+        } else if (floorNumber < 6) {
             return 200
         } else {
             return 400
@@ -59,6 +59,15 @@ function makeDiagram(selector) {
    animation (agent perceives world, then pauses, then agent acts) I've
    broken up the render function into several. */
 
+function renderDirty(diagram) {
+    for (let floorNumber = 0; floorNumber < diagram.world.floors.length; floorNumber++) {
+        const rand = Math.random()
+        if(diagram.world.floors[floorNumber].dirty === false){
+            diagram.world.floors[floorNumber].dirty  = rand < 0.05
+        }
+    }
+}
+
 function renderWorld(diagram) {
     for (let floorNumber = 0; floorNumber < diagram.world.floors.length; floorNumber++) {
         diagram.floors[floorNumber].attr('class', diagram.world.floors[floorNumber].dirty ? 'dirty floor' : 'clean floor');
@@ -85,6 +94,7 @@ function makeRandomAgentImprovedDiagram() {
         let percept = diagram.world.floors[location].dirty;
         let action = reflexVacuumAgent(diagram.world);
         diagram.world.simulate(action);
+        renderDirty(diagram)
         renderWorld(diagram);
         renderAgentPercept(diagram, percept);
         renderAgentAction(diagram, action);
