@@ -109,20 +109,44 @@ function reflexVacuumAgentKnowing(world) {
 }
 
 function goalBasedVacuumAgent(world){
-    const rand = Math.random()
-    const possibleCases = ['LEFT', 'UP', 'RIGHT', 'DOWN']
+    const possibleCases = ['LEFT', 'RIGHT', 'UP', 'DOWN']
+    const positions = []
+    const possiblePositionsToGo = []
     if(world.floors[world.location].dirty) { return 'SUCK'; }
-    else if(world.location % 3 === 0){
-        possibleCases.shift() //doesn't go left
-    }
-    else if(world.location % 3 === 2){
-        possibleCases.splice(2, 1) //doesn't go right
-    }
-    else if(world.location < 3){
-        possibleCases.splice(1,1) //doesn't go up
-    }
-    else if(world.location > 5){
-        possibleCases.pop() //doesn't go down
+    else {
+        positions.push(world.location % 3 - 1) //left
+        positions.push(world.location % 3 + 1) //right
+        positions.push(world.location - 3)  //up
+        positions.push(world.location + 3) //down
+        positions.forEach((value, index) => {
+            if(value >= 0){
+                if(index < 2) { //para a esquerda e para a direita
+                    if(value < 3) { //verificação horizontal
+                        possiblePositionsToGo.push(positions[index])
+                    }
+                } else { //para cima e para baixo
+                    if(value < 9) { //verificação vertical
+                        possiblePositionsToGo.push(positions[index])
+                    }
+                }
+            }
+        })
+        const bestPosition = possiblePositionsToGo[0]
+        const equalWeights = []
+        for(let position = 1; position < possiblePositionsToGo.length; position++){
+            if(world.weight[position] > world.weight[bestPosition]){
+                bestPosition = position
+            } else if (world.weight[position] === world.weight[bestPosition]) {
+                equalWeights.push(position)
+            }
+        }
+
+
+        positions.forEach((value, index) => {
+            if(value === bestPosition){
+                return possibleCases[index]
+            }
+        })
     }
 
 }

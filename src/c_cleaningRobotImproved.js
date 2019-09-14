@@ -92,7 +92,7 @@ function makeRandomAgentImprovedDiagram() {
     function update() {
         let location = diagram.world.location;
         let percept = diagram.world.floors[location].dirty;
-        let action = reflexVacuumAgent(diagram.world);
+        let action = goalBasedVacuumAgent(diagram.world);
         diagram.world.simulate(action);
         renderDirty(diagram)
         renderWorld(diagram);
