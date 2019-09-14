@@ -20,6 +20,7 @@ function makeDiagram(selector) {
     diagram.robot = diagram.root.append('g')
         .attr('class', 'robot')
         .style('transform', `translate(${diagram.xPosition(world.location)}px,translate(${diagram.yRobotPosition(world.location)}px)`);
+    
     diagram.robot.append('rect')
         .attr('width', SIZE)
         .attr('height', SIZE)
@@ -93,12 +94,12 @@ function makeRandomAgentImprovedDiagram() {
         let location = diagram.world.location;
         let percept = diagram.world.floors[location].dirty;
         let action = goalBasedVacuumAgent(diagram.world);
-        diagram.world.updateWeight(action)
-        diagram.world.simulateGoalBased(action);
         renderDirty(diagram)
         renderWorld(diagram);
         renderAgentPercept(diagram, percept);
         renderAgentAction(diagram, action);
+        diagram.world.updateWeight(action)
+        diagram.world.simulateGoalBased(action);
     }
     update();
     setInterval(update, STEP_TIME_MS);

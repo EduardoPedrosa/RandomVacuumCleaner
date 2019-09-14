@@ -12,8 +12,6 @@ class World {
         this.weight = [0, 0, 0,
                        0, 0, 0,
                        0, 0, 0]
-
-        this.lastVisited = [] 
     }
 
     markFloorDirty(floorNumber) {
@@ -75,13 +73,14 @@ class World {
             this.weight[index] = ++e
         })
         if(action === 'SUCK'){
-            this.weight[this.location] += 3
+            this.weight[this.location] += 5
         } else {
-            this.weight[this.location] -= 2
+            this.weight[this.location] -= 4
         }
-        console.log(this.weight[0], this.weight[1], this.weight[2] )
+        console.log(this.weight[0], this.weight[1], this.weight[2])
         console.log(this.weight[3], this.weight[4], this.weight[5])
         console.log(this.weight[6], this.weight[7], this.weight[8])
+        console.log('----------------------')
     }
 }
 
@@ -118,28 +117,19 @@ function reflexVacuumAgentKnowing(world) {
 
 function goalBasedVacuumAgent(world){
     const possibleCases = ['LEFT', 'RIGHT', 'UP', 'DOWN']
-    const positions = []
     const possiblePositionsToGo = []
 
     if(world.floors[world.location].dirty) { return 'SUCK'; }
     else {
-        positions.push(world.location % 3 - 1) //left
-        positions.push(world.location % 3 + 1) //right
-        positions.push(world.location - 3)  //up
-        positions.push(world.location + 3) //down
-        positions.forEach((value, index) => {
-            if(value >= 0 && (!world.lastVisited.includes(value))){
-                if(index < 2) { //para a esquerda e para a direita
-                    if(value < 3) { //verificação horizontal
-                        possiblePositionsToGo.push(positions[index])
-                    }
-                } else { //para cima e para baixo
-                    if(value < 9) { //verificação vertical
-                        possiblePositionsToGo.push(positions[index])
-                    }
-                }
-            }
-        })
+        const left = world.location - 1 
+        const right = world.location + 1 
+        const up = world.location - 3  
+        const down = world.location + 3 
+
+        if((world.location % 3 - 1) >= 0){possiblePositionsToGo.push(left)}
+        if((world.location % 3 + 1) < 3){possiblePositionsToGo.push(right)}
+        if((world.location - 3) >= 0){possiblePositionsToGo.push(up)}
+        if((world.location + 3) < 9){possiblePositionsToGo.push(down)}
 
         possiblePositionsToGo.sort((p1, p2) => {
             if(world.weight[p1] > world.weight[p2]){
@@ -165,19 +155,14 @@ function goalBasedVacuumAgent(world){
             const resultPosition = Math.floor(rand / randFactor)
             bestPosition = equalWeights[resultPosition]
         }
-        let result = -1
-        positions.forEach((value, index) => {
-            if(value === bestPosition){
-                result = possibleCases[index]
-                console.log(result)
-            }
-        })
         
-        if(world.lastVisited.length === 2){
-            world.lastVisited.shift()
-        }
-        world.lastVisited.push(world.location)
-        
+        if(bestPosition === left) { return possibleCases[0]}
+        if(bestPosition === right) { return possibleCases[1]}
+        if(bestPosition === up) { return possibleCases[2]}
+        if(bestPosition === down) { return possibleCases[3]}
+
+        world.updateWeight(result)
+
         return result
     }
 }
