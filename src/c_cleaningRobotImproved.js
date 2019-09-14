@@ -88,12 +88,13 @@ function renderAgentAction(diagram, action) {
 
 function makeRandomAgentImprovedDiagram() {
     let diagram = makeDiagram('#random-agent-improved svg');
-
+    
     function update() {
         let location = diagram.world.location;
         let percept = diagram.world.floors[location].dirty;
         let action = goalBasedVacuumAgent(diagram.world);
-        diagram.world.simulate(action);
+        diagram.world.updateWeight(action)
+        diagram.world.simulateGoalBased(action);
         renderDirty(diagram)
         renderWorld(diagram);
         renderAgentPercept(diagram, percept);
