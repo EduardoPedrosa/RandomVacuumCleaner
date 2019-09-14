@@ -258,7 +258,6 @@ function makeTableControlledDiagram() {
     }
 }
 
-
 makeRandomAgentDiagram();
 makeRandomAgentKnowDiagram()
 makeReaderControlledDiagram();
